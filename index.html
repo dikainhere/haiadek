@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Untuk Adek 🤍</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{margin:0;height:100vh;overflow:hidden}
+
+/* BACKGROUND */
+#app{
+  position:fixed;inset:0;
+  background:
+    radial-gradient(circle at 10% 15%, #ffd1dc, transparent 35%),
+    radial-gradient(circle at 90% 80%, #cce7ff, transparent 40%),
+    linear-gradient(135deg,#fff0f5,#e8f2ff);
+}
+
+/* STIKER */
+.sticker{position:absolute;opacity:.35;font-size:22px;animation:float 6s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* SURAT */
+.letter{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  cursor:pointer;
+}
+.letter img{
+  width:140px;
+  animation:shake 2s infinite;
+}
+@keyframes shake{
+  0%{transform:rotate(0)}
+  25%{transform:rotate(-3deg)}
+  50%{transform:rotate(3deg)}
+  75%{transform:rotate(-2deg)}
+  100%{transform:rotate(0)}
+}
+.tap-text{
+  margin-top:8px;
+  font-size:14px;
+  color:#ff5f9e;
+  animation:pulse 1.4s infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1}
+  50%{opacity:.5}
+}
+
+/* OVERLAY */
+.overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  backdrop-filter: blur(6px);
+  background:rgba(255,255,255,.25);
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+}
+
+/* POPUP */
+.popup{
+  width:310px;
+  padding:26px 22px;
+  border-radius:26px;
+  text-align:center;
+  background:linear-gradient(160deg,#ffffff,#ffe6f0,#e6f0ff);
+  box-shadow:0 20px 40px rgba(255,105,180,.25),
+             inset 0 0 20px rgba(255,255,255,.6);
+}
+.popup img{width:110px;border-radius:18px;margin-bottom:14px}
+.popup p{font-size:15px;line-height:1.55;color:#ff4f8b;margin-bottom:16px}
+
+textarea{
+  width:100%;
+  height:80px;
+  border:none;
+  border-radius:14px;
+  padding:10px;
+  resize:none;
+  outline:none;
+  margin-bottom:14px;
+}
+
+button{
+  padding:12px 28px;
+  border:none;
+  border-radius:999px;
+  background:linear-gradient(135deg,#ff6fae,#ff4d88,#ff8ccf);
+  color:white;
+  font-size:15px;
+  font-weight:600;
+  box-shadow:0 6px 16px rgba(255,77,136,.45);
+}
+
+.popup.shake{animation:shakeBox .4s}
+.popup.bounce{animation:bounce .3s}
+@keyframes shakeBox{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  50%{transform:translateX(6px)}
+  75%{transform:translateX(-4px)}
+  100%{transform:translateX(0)}
+}
+@keyframes bounce{
+  0%{transform:scale(.92)}
+  50%{transform:scale(1.05)}
+  100%{transform:scale(1)}
+}
+
+/* HEART */
+.heart{
+  position:fixed;
+  font-size:18px;
+  animation:fall 2.5s linear forwards;
+  pointer-events:none;
+}
+@keyframes fall{
+  0%{transform:translateY(-10px);opacity:1}
+  100%{transform:translateY(110vh);opacity:0}
+}
+</style>
+</head>
+
+<body>
+<div id="app">
+
+<!-- STIKER -->
+<div class="sticker" style="top:10%;left:12%">💗</div>
+<div class="sticker" style="top:22%;right:14%">✨</div>
+<div class="sticker" style="bottom:18%;left:10%">🌸</div>
+<div class="sticker" style="bottom:12%;right:18%">⭐</div>
+
+<audio id="bgMusic" src="Song.mp3"></audio>
+
+<!-- SURAT -->
+<div class="letter" id="openLetter">
+  <img src="https://media.giphy.com/media/1xVhmJpV6yE3r6lQkg/giphy.gif">
+  <div class="tap-text">Tekan ini yaa 💕</div>
+</div>
+
+<!-- POPUP -->
+<div class="overlay" id="overlay">
+  <div class="popup" id="popup">
+    <img id="popupImg">
+    <p id="popupText"></p>
+    <textarea id="input"></textarea>
+    <button id="btn">OK</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const letter=document.getElementById("openLetter");
+const overlay=document.getElementById("overlay");
+const popup=document.getElementById("popup");
+const img=document.getElementById("popupImg");
+const text=document.getElementById("popupText");
+const input=document.getElementById("input");
+const btn=document.getElementById("btn");
+const music=document.getElementById("bgMusic");
+
+const steps=[
+{img:"https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",text:"Hallo adek 👋👋👋",type:"normal"},
+{img:"https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",text:"Coba tebak siapa yang hari ini ulang tahun?",type:"quiz"},
+{img:"https://media.giphy.com/media/26BRuo6sLetdllPAQ/giphy.gif",text:"Yeaah betul 💕 adek yang paling cantik 😘",type:"normal"},
+{img:"https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",text:`Selamat ulang tahun yaa, adek cantik 🎂💖<br><br>
+Terima kasih udah selalu mau dengerin cerita-cerita aku, tukar obrolan,
+dan berbagi hal-hal kecil yang berarti.<br><br>
+Semoga adek selalu sehat, bahagia, dan dikelilingi hal baik ✨<br><br>
+Nikmatin hari spesial ini yaa 🤍`,type:"normal"}
+];
+
+let step=0;
+
+letter.onclick=()=>{
+  letter.style.display="none";
+  overlay.style.display="flex";
+  fadeMusic();
+  load();
+};
+
+btn.onclick=()=>{
+  if(steps[step].type==="quiz"){
+    if(input.value.trim().toLowerCase()!=="intan"){
+      error("Hehe salah 😝 coba inget lagi~");return;
+    }
+  }
+  success(()=>{
+    step++;
+    if(step>=steps.length){send()}else{load()}
+  });
+};
+
+function load(){
+  reset();
+  img.src=steps[step].img;
+  text.innerHTML=steps[step].text;
+  input.style.display=steps[step].type==="quiz"?"block":"none";
+  input.value="";
+  btn.innerText="OK";
+}
+
+function send(){
+  reset();
+  img.src="https://media.giphy.com/media/26BRuo6sLetdllPAQ/giphy.gif";
+  text.innerText="Tulis pesan buat aku 🤍";
+  input.style.display="block";
+  btn.innerText="Kirim";
+  btn.onclick=()=>{
+    if(!input.value.trim()){error("Pesannya jangan kosong dong 🥺");return;}
+    location.href=`https://t.me/ismeclay?text=${encodeURIComponent(input.value)}`;
+  };
+  hearts();
+}
+
+function error(t){
+  text.innerText=t;
+  popup.classList.add("shake");
+  setTimeout(()=>popup.classList.remove("shake"),400);
+}
+
+function success(cb){
+  popup.classList.add("bounce");
+  hearts();
+  setTimeout(()=>{
+    popup.classList.remove("bounce");
+    cb();
+  },300);
+}
+
+function fadeMusic(){
+  music.volume=0;
+  music.play();
+  let v=0;
+  const i=setInterval(()=>{
+    v+=0.05;music.volume=v;
+    if(v>=1)clearInterval(i);
+  },50);
+}
+
+function hearts(){
+  for(let i=0;i<6;i++){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerText="💗";
+    h.style.left=Math.random()*100+"vw";
+    h.style.fontSize=14+Math.random()*12+"px";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),2500);
+  }
+}
+
+function reset(){
+  popup.classList.remove("shake","bounce");
+}
+</script>
+</body>
+</html>
